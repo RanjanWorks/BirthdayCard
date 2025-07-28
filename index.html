@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Birthday Card Creator</title>
+
+  <!-- ✅ Basic SEO -->
+  <meta name="description" content="Create beautiful custom birthday cards with name, age, photo, and message. Download your card as an image or PDF. Free and easy to use!">
+  <meta name="keywords" content="birthday card generator, birthday card maker, custom birthday card, HTML birthday card, birthday wishes">
+  <meta name="author" content="Ranjan Kashyap">
+
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <meta property="og:title" content="Birthday Card Creator">
+  <meta property="og:description" content="Design and download beautiful birthday cards with custom name, photo, and wishes.">
+  <meta property="og:image" content="https://yourdomain.com/preview.jpg"> <!-- Replace with your image URL -->
+  <meta property="og:url" content="https://yourdomain.com">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Birthday Card Creator">
+  <meta name="twitter:description" content="Create personalized birthday cards with name, age, and photo. Download your design easily!">
+  <meta name="twitter:image" content="https://yourdomain.com/preview.jpg"> <!-- Replace with your image URL -->
+  <meta name="theme-color" content="#FFD700">
+
+</head>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap');
+        
+        .dancing-script {
+            font-family: 'Dancing Script', cursive;
+        }
+        
+        .poppins {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .card-preview {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .bg-gradient1 { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); }
+        .bg-gradient2 { background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%); }
+        .bg-gradient3 { background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%); }
+        .bg-solid1 { background: #f5f7fa; }
+        .bg-solid2 { background: #e0f7fa; }
+        .bg-solid3 { background: #fff8e1; }
+        
+        .card-preview:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            opacity: 0.8;
+            animation: fall 5s linear infinite;
+            will-change: transform;
+            transform: translateZ(0);
+        }
+        
+        @keyframes fall {
+            0% { transform: translateY(-100vh) rotate(0deg) scale(1); }
+            50% { transform: translateY(50vh) rotate(180deg) scale(1.2); }
+            100% { transform: translateY(100vh) rotate(360deg) scale(0.8); }
+        }
+        
+        @keyframes spin-slow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .animate-spin-slow {
+            animation: spin-slow 20s linear infinite;
+        }
+        
+        .card-preview::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23f472b6'%3E%3Cpath d='M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            opacity: 0.2;
+        }
+        
+   
+        .photo-placeholder {
+            background: linear-gradient(45deg, #f3f4f6 25%, #e5e7eb 25%, #e5e7eb 50%, #f3f4f6 50%, #f3f4f6 75%, #e5e7eb 75%);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-pink-50 to-purple-100 min-h-screen poppins">
+    <div class="container mx-auto px-4 py-4 md:py-8">
+        <h1 class="text-3xl md:text-4xl font-bold text-center mb-2 text-purple-800 dancing-script">Birthday Card Creator</h1
+$0>
+        <p class="text-center text-gray-600 mb-6 md:mb-8 text-sm md:text-base">Create a personalized birthday card in minutes!</p>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
+            <!-- Form Section -->
+            <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">
+                <h2 class="text-xl md:text-2xl font-semibold mb-4 md:mb-6 text-purple-700">Card Details</h2>
+                
+                <div class="space-y-3 md:space-y-4">
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="name">Recipient's Name</label>
+                        <input type="text" id="name" placeholder="Enter name" 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="birthdate">Birthdate</label>
+                        <input type="date" id="birthdate" 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="message">Birthday Message</label>
+                        <textarea id="message" rows="4" placeholder="Write your birthday wishes here..."
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 mb-2" for="photo">Upload Photo (Optional)</label>
+                        <div class="flex items-center space-x-4">
+                            <label for="photo" class="cursor-pointer bg-purple-100 text-purple-700 px-4 py-2 rounded-lg hover:bg-purple-200 transition">
+                                <i class="fas fa-upload mr-2"></i>Choose File
+                            </label>
+                            <span id="fileName" class="text-gray-500">No file chosen</span>
+                            <input type="file" id="photo" accept="image/*" class="hidden">
+                        </div>
+                    </div>
+                    
+                    <div class="pt-2">
+                        <label class="block text-gray-700 mb-2">Card Background</label>
+                        <div class="grid grid-cols-3 gap-2 mb-4">
+                            <button type="button" data-bg="gradient1" class="bg-gradient-to-r from-pink-100 to-purple-100 h-10 rounded-lg border-2 border-transparent hover:border-purple-300 focus:border-purple-500"></button>
+                            <button type="button" data-bg="gradient2" class="bg-gradient-to-r from-blue-100 to-teal-100 h-10 rounded-lg border-2 border-transparent hover:border-purple-300 focus:border-purple-500"></button>
+                            <button type="button" data-bg="gradient3" class="bg-gradient-to-r from-yellow-100 to-orange-100 h-10 rounded-lg border-2 border-transparent hover:border-purple-300 focus:border-purple-500"></button>
+                            <button type="button" data-bg="solid1" class="bg-pink-50 h-10 rounded-lg border-2 border-transparent hover:border-purple-300 focus:border-purple-500"></button>
+                            <button type="button" data-bg="solid2" class="bg-blue-50 h-10 rounded-lg border-2 border-transparent hover:border-purple-300 focus:border-purple-500"></button>
+                            <button type="button" data-bg="solid3" class="bg-yellow-50 h-10 rounded-lg border-2 border-transparent hover:border-purple-300 focus:border-purple-500"></button>
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <button id="generateBtn" class="w-full bg-gradient-to-r from-purple-600 to-pink-500 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-600 transition shadow-md">
+                            <i class="fas fa-magic mr-2"></i> Generate Card
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Preview Section -->
+            <div class="flex flex-col">
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <h2 class="text-2xl font-semibold mb-4 text-purple-700">Card Preview</h2>
+                    <p class="text-gray-600 mb-4">Your beautiful birthday card will appear here</p>
+                    
+                    <div id="cardPreview" class="card-preview rounded-xl p-4 md:p-8 min-h-64 md:min-h-96 flex flex-col items-center justify-center relative overflow-hidden">
+                        <div id="confettiContainer" class="absolute inset-0 pointer-events-none"></div>
+                        <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500"></div>
+                        <div class="absolute bottom-0 right-0 w-24 h-24 rounded-full bg-pink-200 opacity-20 transform translate-x-12 translate-y-12"></div>
+                        <div class="absolute top-0 left-0 w-16 h-16 rounded-full bg-purple-200 opacity-20 transform -translate-x-8 -translate-y-8"></div>
+                        
+                        <div id="previewContent" class="text-center w-full relative z-10">
+                            <div class="mb-8 relative">
+                                <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 text-yellow-400 text-4xl">★</div>
+                                <h3 id="previewTitle" class="text-3xl md:text-5xl font-bold dancing-script text-purple-700 mb-2 bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600">Happy Birthday!</h3>
+                                <p id="previewAge" class="text-gray-600 italic text-base md:text-lg">Turning <span class="font-bold text-purple-600">0</span> years young!</p>
+                            </div>
+                            
+                            <div id="photoContainer" class="w-24 h-24 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white shadow-xl mb-4 md:mb-8 photo-placeholder flex items-center justify-center relative mx-auto">
+                                <div class="absolute inset-0 rounded-full border-2 border-dashed border-pink-300 animate-spin-slow"></div>
+                                <i class="fas fa-user text-gray-400 text-5xl"></i>
+                            </div>
+                            
+                            <h4 id="previewName" class="text-2xl md:text-3xl font-semibold text-gray-800 mb-4 md:mb-6 dancing-script">Name</h4>
+                            
+                            <div id="previewMessage" class="bg-white bg-opacity-90 rounded-xl p-4 md:p-6 mb-4 md:mb-6 max-w-md mx-auto shadow-md border-l-4 border-pink-400">
+                                <p class="text-gray-700 text-base md:text-lg leading-relaxed">Your special birthday message will appear here.</p>
+                            </div>
+                            
+                            <div class="mt-8">
+                                <p class="text-sm text-gray-500 flex items-center justify-center">
+                                    <span class="ml-2">Made With ❤️ By Ranjan</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-2 md:gap-4">
+                    <button id="downloadImageBtn" disabled class="bg-blue-600 text-white py-2 md:py-3 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center text-xs md:text-sm">
+                        <i class="fas fa-image mr-1 md:mr-2"></i> <span class="hidden sm:inline">Download</span> Image
+                    </button>
+                    <button id="downloadPdfBtn" disabled class="bg-red-600 text-white py-2 md:py-3 rounded-lg font-semibold hover:bg-red-700 transition flex items-center justify-center text-xs md:text-sm">
+                        <i class="fas fa-file-pdf mr-1 md:mr-2"></i> <span class="hidden sm:inline">Download</span> PDF
+                    </button>
+                    <button id="shareWhatsappBtn" disabled class="bg-green-600 text-white py-2 md:py-3 rounded-lg font-semibold hover:bg-green-700 transition flex items-center justify-center text-xs md:text-sm">
+                        <i class="fab fa-whatsapp mr-1 md:mr-2"></i> Share
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center py-6 text-gray-600 text-sm">
+        <p>© 2023 Birthday Card Creator | Made with ❤️ Ranjan</p>
+    </footer>
+<script src="script.js"></script>
+   
+</body>
+</html>
